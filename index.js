@@ -1,8 +1,20 @@
 try {
-    await loadXml('https://hockey.de/VVI-web/Ergebnisdienst/HED-Ligen.asp?XML=J');
+    const hl = await loadHockeyLigen();
+    document.getElementById('output').textContent = JSON.stringify(hl.HockeyBereich, null, '  ');
 }
 catch (e) {
     document.getElementById('output').textContent = e.message;
+}
+
+async function loadHockeyLigen() {
+    const result = await loadXml('https://hockey.de/VVI-web/Ergebnisdienst/HED-Ligen.asp?XML=J');
+    console.log('result', result);
+    const hl = result.HockeyLigen;
+    console.log('hl', hl);
+    for (const bereich of hl.HockeyBereich) {
+        bereich.ligen = hl.HockeyLiga.filter(liga => liga.LigaBereichNr == bereich.BereichNr);
+    }
+    return hl;
 }
 
 async function loadXml(url) {
@@ -10,14 +22,13 @@ async function loadXml(url) {
     const xml = await response.text();
     const dom = new DOMParser().parseFromString(xml, "text/xml");
     const obj = parseXml(dom);
-    console.log(dom);
     console.log(obj);
-    document.getElementById('output').textContent = JSON.stringify(obj, null, '  ');
+    return obj;
 }
 
 function parseXml(node) {
-    const obj = { text: null };
     if ( node.children.length > 0) {
+        const obj = { };
         for (let i = 0; i < node.children.length; i++) {
             const childNode = node.children[i];
             const childName = childNode.nodeName;
@@ -32,9 +43,9 @@ function parseXml(node) {
                 obj[childName] = childObj;
             }
         }
+        return obj;
     }
     else {
-        obj.text = node.textContent;
+        return node.textContent;
     }
-    return obj;
 }
