@@ -1,6 +1,6 @@
 try {
     const hl = await loadHockeyLigen();
-    fillBereiche(hl.HockeyBereich);
+    fillBereiche(hl.bereiche);
 }
 catch (e) {
     //TODO
@@ -44,6 +44,8 @@ async function loadHockeyLigen() {
     for (const bereich of hl.HockeyBereich) {
         bereich.ligen = hl.HockeyLiga.filter(liga => liga.LigaBereichNr == bereich.BereichNr);
     }
+    hl.bereiche = hl.HockeyBereich.filter(bereich => bereich.ligen.length > 0);
+    delete hl.HockeyBereich;
     delete hl.HockeyLiga;
     return hl;
 }
