@@ -8,12 +8,11 @@ catch (e) {
 
 async function loadHockeyLigen() {
     const result = await loadXml('https://hockey.de/VVI-web/Ergebnisdienst/HED-Ligen.asp?XML=J');
-    console.log('result', result);
     const hl = result.HockeyLigen;
-    console.log('hl', hl);
     for (const bereich of hl.HockeyBereich) {
         bereich.ligen = hl.HockeyLiga.filter(liga => liga.LigaBereichNr == bereich.BereichNr);
     }
+    delete hl.HockeyLiga;
     return hl;
 }
 
