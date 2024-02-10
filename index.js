@@ -7,7 +7,7 @@ catch (e) {
     //document.getElementById('output').textContent = e.message;
 }
 
-function fillBereiche(bereiche, node) {
+function fillBereiche(bereiche) {
     const acc = document.getElementById('bereiche');
     const blueprint = acc.querySelector('.bereich.blueprint');
     for (const bereich of bereiche) {
@@ -19,8 +19,23 @@ function fillBereiche(bereiche, node) {
         button.setAttribute('data-bs-target', '#' + id);
         const collapse = copy.querySelector('.accordion-collapse');
         collapse.id = id;
+        fillLigen(bereich.ligen, copy);
         acc.append(copy);
     }
+    blueprint.remove();
+}
+
+function fillLigen(ligen, parent) {
+    const listGroup = parent.querySelector('.list-group');
+    const blueprint = listGroup.querySelector('.liga.blueprint');
+    for (const liga of ligen) {
+        const copy =  blueprint.cloneNode(true);
+        copy.classList.remove('blueprint');
+        copy.querySelector('.title').textContent = liga.LigaTitel;
+        copy.querySelector('.saison').textContent = liga.LigaSaison;
+        listGroup.append(copy);
+    }
+    blueprint.remove();
 }
 
 async function loadHockeyLigen() {

@@ -8,18 +8,24 @@
     <link href="index.css" rel="stylesheet">
 </head>
 <body>
-<h1>Hockeyergebnisse</h1>
-
-<div class="accordion" id="bereiche">
-    <div class="accordion-item bereich blueprint">
-        <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="" aria-expanded="false" aria-controls="collapseOne">
-        </button>
-        </h2>
-        <div id="" class="accordion-collapse collapse" data-bs-parent="#bereiche">
-        <div class="accordion-body">
-            <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-        </div>
+    
+<div class="container">
+    <h1>Hockeyergebnisse</h1>
+    <div class="accordion" id="bereiche">
+        <div class="accordion-item bereich blueprint">
+            <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="" aria-expanded="false" aria-controls="collapseOne">
+            </button>
+            </h2>
+            <div id="" class="accordion-collapse collapse" data-bs-parent="#bereiche">
+            <div class="accordion-body">
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action liga blueprint" aria-current="false">
+                        <span class="title"></span> [<span class="saison"></span>]
+                    </a>
+                  </div>
+            </div>
+            </div>
         </div>
     </div>
 </div>

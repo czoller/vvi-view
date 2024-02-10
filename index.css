@@ -5,3 +5,7 @@
 .accordion-button:focus {
     box-shadow: none;
 }
+
+.accordion-body {
+    border: 2px solid var(--bs-accordion-active-bg);
+}
