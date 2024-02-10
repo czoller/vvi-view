@@ -50,7 +50,8 @@ async function loadHockeyLigen() {
 
 async function loadXml(url) {
     const response = await fetch(url);
-    const xml = await response.text();
+    const buffer = await response.arrayBuffer();
+    const xml = new TextDecoder('ISO-8859-1').decode(buffer);
     const dom = new DOMParser().parseFromString(xml, "text/xml");
     const obj = parseXml(dom);
     console.log(obj);
