@@ -1,9 +1,26 @@
 try {
     const hl = await loadHockeyLigen();
-    document.getElementById('output').textContent = JSON.stringify(hl.HockeyBereich, null, '  ');
+    fillBereiche(hl.HockeyBereich);
 }
 catch (e) {
-    document.getElementById('output').textContent = e.message;
+    //TODO
+    //document.getElementById('output').textContent = e.message;
+}
+
+function fillBereiche(bereiche, node) {
+    const acc = document.getElementById('bereiche');
+    const blueprint = acc.querySelector('.bereich.blueprint');
+    for (const bereich of bereiche) {
+        const id = 'bereich' + bereich.BereichNr;
+        const copy =  blueprint.cloneNode(true);
+        copy.classList.remove('blueprint');
+        const button = copy.querySelector('.accordion-button');
+        button.textContent = bereich.BereichName;
+        button.setAttribute('data-bs-target', '#' + id);
+        const collapse = copy.querySelector('.accordion-collapse');
+        collapse.id = id;
+        acc.append(copy);
+    }
 }
 
 async function loadHockeyLigen() {
