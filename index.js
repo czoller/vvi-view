@@ -1,5 +1,6 @@
 try {
     const hl = await loadHockeyLigen();
+    console.log(hl);
     document.getElementById('saison').textContent = hl.saison;
     fillBereiche(hl.bereiche, hl.saison);
 }
@@ -33,6 +34,7 @@ function fillLigen(ligen, parent, saison) {
         const copy =  blueprint.cloneNode(true);
         copy.classList.remove('blueprint');
         copy.textContent = liga.LigaTitel;
+        copy.setAttribute('href', 'liga.html?saison=' + liga.LigaSaison + '&liga=' + liga.LigaID);
         if (liga.LigaSaison != saison) {
             copy.textContent += ' (' + liga.LigaSaison + ')';
         }
