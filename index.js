@@ -1,13 +1,14 @@
 try {
     const hl = await loadHockeyLigen();
-    fillBereiche(hl.bereiche);
+    document.getElementById('saison').textContent = hl.saison;
+    fillBereiche(hl.bereiche, hl.saison);
 }
 catch (e) {
     //TODO
     //document.getElementById('output').textContent = e.message;
 }
 
-function fillBereiche(bereiche) {
+function fillBereiche(bereiche, saison) {
     const acc = document.getElementById('bereiche');
     const blueprint = acc.querySelector('.bereich.blueprint');
     for (const bereich of bereiche) {
@@ -19,35 +20,57 @@ function fillBereiche(bereiche) {
         button.setAttribute('data-bs-target', '#' + id);
         const collapse = copy.querySelector('.accordion-collapse');
         collapse.id = id;
-        fillLigen(bereich.ligen, copy);
+        fillLigen(bereich.ligen, copy, saison);
         acc.append(copy);
     }
     blueprint.remove();
 }
 
-function fillLigen(ligen, parent) {
+function fillLigen(ligen, parent, saison) {
     const listGroup = parent.querySelector('.list-group');
     const blueprint = listGroup.querySelector('.liga.blueprint');
     for (const liga of ligen) {
         const copy =  blueprint.cloneNode(true);
         copy.classList.remove('blueprint');
-        copy.querySelector('.title').textContent = liga.LigaTitel;
-        copy.querySelector('.saison').textContent = liga.LigaSaison;
+        copy.textContent = liga.LigaTitel;
+        if (liga.LigaSaison != saison) {
+            copy.textContent += ' (' + liga.LigaSaison + ')';
+        }
         listGroup.append(copy);
     }
     blueprint.remove();
 }
 
 async function loadHockeyLigen() {
-    const result = await loadXml('https://hockey.de/VVI-web/Ergebnisdienst/HED-Ligen.asp?XML=J');
-    const hl = result.HockeyLigen;
-    for (const bereich of hl.HockeyBereich) {
-        bereich.ligen = hl.HockeyLiga.filter(liga => liga.LigaBereichNr == bereich.BereichNr);
+    const hl = await loadXml('https://hockey.de/VVI-web/Ergebnisdienst/HED-Ligen.asp?XML=J');
+    for (const bereich of hl.HockeyLigen.HockeyBereich) {
+        bereich.ligen = hl.HockeyLigen.HockeyLiga.filter(liga => liga.LigaBereichNr == bereich.BereichNr);
     }
-    hl.bereiche = hl.HockeyBereich.filter(bereich => bereich.ligen.length > 0);
-    delete hl.HockeyBereich;
-    delete hl.HockeyLiga;
-    return hl;
+    const bereiche = hl.HockeyLigen.HockeyBereich.filter(bereich => bereich.ligen.length > 0);
+    const saison = maxOccurence(hl.HockeyLigen.HockeyLiga.map(liga => liga.LigaSaison));
+    return {
+        bereiche: bereiche,
+        saison: saison
+    };
+}
+
+function maxOccurence(items) {
+    const counters = {};
+    const maxItem = {
+        item: null,
+        count: 0
+    };
+    for (const item of items) {
+        if (!counters[item]) {
+            counters[item] = 0;
+        }
+        ++counters[item];
+        if (counters[item] > maxItem.count) {
+            maxItem.item = item;
+            maxItem.count = counters[item];
+        }
+    }
+    return maxItem.item;
 }
 
 async function loadXml(url) {
@@ -56,7 +79,6 @@ async function loadXml(url) {
     const xml = new TextDecoder('ISO-8859-1').decode(buffer);
     const dom = new DOMParser().parseFromString(xml, "text/xml");
     const obj = parseXml(dom);
-    console.log(obj);
     return obj;
 }
 
