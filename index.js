@@ -12,9 +12,7 @@ async function loadXml(url) {
     const obj = parseXml(dom);
     console.log(dom);
     console.log(obj);
-    document.getElementById('output').textContent = xml;
-
-
+    document.getElementById('output').textContent = JSON.stringify(obj, null, '  ');
 }
 
 function parseXml(node) {
@@ -25,12 +23,10 @@ function parseXml(node) {
             const childName = childNode.nodeName;
             const childObj = parseXml(childNode);
             if (obj[childName]) {
-                if (Array.isArray(obj[childName])) {
-                    obj[childName].push = childObj;
-                }
-                else {
+                if (!Array.isArray(obj[childName])) {
                     obj[childName] = [obj[childName]];
                 }
+                obj[childName].push(childObj);
             }
             else {
                 obj[childName] = childObj;
