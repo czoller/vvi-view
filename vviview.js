@@ -4,8 +4,6 @@ async function loadLiga() {
     const urlParams = new URLSearchParams(window.location.search);
     const saison = urlParams.get('saison');
     const liga = urlParams.get('liga');
-    console.log('saison', saison);
-    console.log('liga', liga);
     if (saison != null && saison.match(/^(HALLE|FELD)\d\d$/) && liga != null && liga.match(/^[A-Z0-9\-]{8,12}$/)) {
         try {
             const hl = await fetchHockeyLiga(saison, liga);
