@@ -6,12 +6,12 @@ async function loadLiga() {
     const liga = urlParams.get('liga');
     if (saison != null && saison.match(/^(HALLE|FELD)\d\d$/) && liga != null && liga.match(/^[A-Z0-9\-]{8,12}$/)) {
         try {
-            const hl = await fetchHockeyLiga(saison, liga);
-            console.log(hl);
-            document.getElementById('title').textContent = hl.Liga.ATIT;
-            document.getElementById('bereich').textContent = hl.Liga.AOTI;
+            const lg = await fetchHockeyLiga(saison, liga);
+            console.log(lg);
+            document.getElementById('title').textContent = lg.title;
+            document.getElementById('bereich').textContent = lg.bereich;
             document.getElementById('saison').textContent = saison;
-            //fillLiga(hl);
+            fillTabellen(lg.gruppen);
         }
         catch (e) {
             //TODO
@@ -25,8 +25,32 @@ async function loadLiga() {
 }
 
 async function fetchHockeyLiga(saison, liga) {
-    const hl = await loadXml(`https://hockey.de/VVI-web/Ergebnisdienst/HED-XML.asp?XML=J&saison=${saison}&liga=${liga}`);
-    return hl;
+    const lg = await loadXml(`https://hockey.de/VVI-web/Ergebnisdienst/HED-XML.asp?XML=J&saison=${saison}&liga=${liga}`);
+    const title = lg.Liga.ATIT;
+    const bereich = lg.Liga.AOTI;
+    var gruppen = lg.Liga.Gruppe;
+    if (!Array.isArray(gruppen)) {
+        gruppen = [gruppen];
+    }
+    return {
+        title: title,
+        bereich: bereich,
+        gruppen: gruppen
+    };
+}
+
+function fillTabellen(gruppen) {
+    console.log(gruppen);
+    const tab = document.getElementById('nav-tabelle');
+    const blueprint = tab.querySelector('.tabelle.blueprint');
+    for (const gruppe of gruppen) {
+        const copy =  blueprint.cloneNode(true);
+        copy.classList.remove('blueprint');
+        copy.querySelector('.gruppe').textContent = gruppe.GNAM;
+        //fillTeams(gruppe.Tabelle.Zeile, copy);
+        tab.append(copy);
+    }
+    blueprint.remove();
 }
 
 /******** INDEX ********/
