@@ -62,8 +62,8 @@ function buildSpieltage(xmlSpiele) {
                 datum: new Date(xmlSpiel.SDAG),
                 spiele: []
             };
-            spieltage[xmlSpiel.SDAG].spiele.push(buildSpiel(xmlSpiel));
         }
+        spieltage[xmlSpiel.SDAG].spiele.push(buildSpiel(xmlSpiel));
     }
     return Object.values(spieltage);
 }
@@ -75,7 +75,8 @@ function buildSpiel(xmlSpiel) {
         team1: xmlSpiel.STEA,
         team2: xmlSpiel.STEG,
         ergebnis: xmlSpiel.SRES,
-        gemeldet: xmlSpiel.SMEL
+        gemeldet: xmlSpiel.SMEL,
+        bemerkung: xmlSpiel.SBEM
     }
 }
 
@@ -112,7 +113,7 @@ function fillSpielplaene(gruppen) {
         tabContentCopy.classList.remove('blueprint');
         tabContentCopy.id = tabContentId;
         tabContentCopy.setAttribute('aria-labelledby', tabId);
-        tabContentCopy.querySelector('.title').textContent = `Spielplan ${gruppe.title}`;
+        tabContentCopy.querySelector('.title').textContent = `${gruppe.title}`;
         fillSpieltage(gruppe.spieltage, tabContentCopy);
         tabContent.append(tabContentCopy);
 
@@ -129,11 +130,8 @@ function fillSpielplaene(gruppen) {
 }
 
 function fillSpieltage(spieltage, parent) {
-    console.log(parent);
     const ul = parent.querySelector('.spieltage');
-    console.log(ul);
     const blueprint = ul.querySelector('.spieltag.blueprint');
-    console.log(spieltage);
     for (const spieltag of spieltage) {
         const copy =  blueprint.cloneNode(true);
         copy.classList.remove('blueprint');
@@ -143,7 +141,32 @@ function fillSpieltage(spieltage, parent) {
             month: 'long',
             year: 'numeric'
         });
+        fillSpiele(spieltag.spiele, copy);
         ul.append(copy);
+    }
+    blueprint.remove();
+}
+
+function fillSpiele(spiele, parent) {
+    const spieleDiv = parent.querySelector('.spiele');
+    const blueprint = spieleDiv.querySelector('.spiel.blueprint');
+    for (const spiel of spiele) {
+        console.log(spiel)
+        const copy =  blueprint.cloneNode(true);
+        copy.classList.remove('blueprint');
+        copy.querySelector('.uhrzeit').textContent = spiel.uhrzeit;
+        copy.querySelector('.team1').textContent = spiel.team1;
+        copy.querySelector('.team2').textContent = spiel.team2;
+        if (spiel.ergebnis) {
+            copy.querySelector('.ergebnis').textContent = spiel.ergebnis;
+        }
+        else if (spiel.gemeldet) {
+            copy.querySelector('.ergebnis').textContent = spiel.gemeldet;
+            copy.querySelector('.ergebnis').classList.add('gemeldet');
+        }
+        copy.querySelector('.ort').textContent = spiel.ort;
+        copy.querySelector('.bemerkung').textContent = spiel.bemerkung;
+        spieleDiv.append(copy);
     }
     blueprint.remove();
 }
