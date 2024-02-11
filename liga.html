@@ -28,18 +28,18 @@
                       <tr>
                           <th scope="col" class="platz">Platz</th>
                           <th scope="col" class="team">Team</th>
-                          <th scope="col" class="spiele">Spiele</th>
-                          <th scope="col" class="tore">Tore</th>
-                          <th scope="col" class="punkte">Punkte</th>
+                          <th scope="col text-center" class="spiele">Spiele</th>
+                          <th scope="col text-center" class="tore">Tore</th>
+                          <th scope="col text-center" class="punkte">Punkte</th>
                         </tr>
                     </thead>
                     <tbody>
                       <tr class="zeile blueprint">
                         <th scope="row" class="platz"></th>
                         <td class="team"></td>
-                        <td class="spiele"></td>
-                        <td class="tore"></td>
-                        <td class="punkte"></td>
+                        <td class="spiele text-center"></td>
+                        <td class="tore text-center"></td>
+                        <td class="punkte text-center"></td>
                       </tr>
                     </tbody>
                 </table>
@@ -51,15 +51,18 @@
                 <li class="list-group-item spieltag blueprint">
                     <h4 class="h6 datum"></h4>
                     <div class="spiele">
-                        <div class="row spiel blueprint py-1">
-                            <div class="col-1 uhrzeit"></div>
-                            <div class="col-5 row begegnung">
-                                <div class="col-6 team1"></div>
-                                <div class="col-6 team2"></div>
+                        <div class="row align-items-center py-1 border-bottom spiel blueprint">
+                            <div class="col-2 col-md-1 uhrzeit"></div>
+                            <div class="col-7 col-md-8 col-xl-5 row align-items-center begegnung">
+                                <div class="col-12 col-md-5 text-md-end team1"></div>
+                                <div class="col-1 d-none d-md-block text-center separator">&mdash;</div>
+                                <div class="col-12 col-md-6 team2"></div>
                             </div>
-                            <div class="col-1 ergebnis"></div>
-                            <div class="col-1 bemerkung"></div>
-                            <div class="col-4 ort"></div>
+                            <div class="col-3 col-md-3 row align-items-center">
+                                <div class="col-12 col-md-4 ergebnis"></div>
+                                <div class="col-12 col-md-8 bemerkung"></div>
+                            </div>
+                            <div class="col-12 col-xl-3 small ort"></div>
                         </div>
                     </div>
                 </li>
