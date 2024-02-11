@@ -7,11 +7,10 @@ async function loadLiga() {
     if (saison != null && saison.match(/^(HALLE|FELD)\d\d$/) && liga != null && liga.match(/^[A-Z0-9\-]{8,12}$/)) {
         try {
             const lg = await fetchHockeyLiga(saison, liga);
-            console.log(lg);
             document.getElementById('title').textContent = lg.title;
             document.getElementById('bereich').textContent = lg.bereich;
             document.getElementById('saison').textContent = saison;
-            fillTabellen(lg.gruppen);
+            fillGruppen(lg.gruppen);
         }
         catch (e) {
             //TODO
@@ -32,6 +31,7 @@ async function fetchHockeyLiga(saison, liga) {
     if (!Array.isArray(gruppen)) {
         gruppen = [gruppen];
     }
+    gruppen = gruppen.map(buildGruppe);
     return {
         title: title,
         bereich: bereich,
@@ -39,18 +39,61 @@ async function fetchHockeyLiga(saison, liga) {
     };
 }
 
-function fillTabellen(gruppen) {
-    console.log(gruppen);
+function buildGruppe(xmlGruppe) {
+    return {
+        title: xmlGruppe.GNAM,
+        tabelle: buildTabelle(xmlGruppe)
+    };
+}
+
+function buildTabelle(xmlGruppe) {
+    if (xmlGruppe.Tabelle) {
+        return {
+            hinweis: xmlGruppe.Tabelle.XBEM,
+            teams: xmlGruppe.Tabelle.Zeile.map(buildTabellenTeam)
+        };
+    }
+    return null;
+}
+
+function buildTabellenTeam(xmlZeile) {
+    return {
+        platz: xmlZeile.XPLZ,
+        team: xmlZeile.XNAM,
+        spiele: xmlZeile.XSPL,
+        tore: xmlZeile.XTOR,
+        punkte: xmlZeile.XPUN
+    };
+}
+
+function fillGruppen(gruppen) {
     const tab = document.getElementById('nav-tabelle');
-    const blueprint = tab.querySelector('.tabelle.blueprint');
+    const blueprint = tab.querySelector('.gruppe.blueprint');
     for (const gruppe of gruppen) {
-        const copy =  blueprint.cloneNode(true);
-        copy.classList.remove('blueprint');
-        copy.querySelector('.gruppe').textContent = gruppe.GNAM;
-        //fillTeams(gruppe.Tabelle.Zeile, copy);
-        tab.append(copy);
+        if (gruppe.tabelle) {
+            const copy =  blueprint.cloneNode(true);
+            copy.classList.remove('blueprint');
+            copy.querySelector('.title').textContent = gruppe.title;
+            fillTabelle(gruppe.tabelle.teams, copy);
+            tab.append(copy);
+        }
     }
     blueprint.remove();
+}
+
+function fillTabelle(teams, parent) {
+    const tbody = parent.querySelector('.tabelle tbody');
+    const blueprint = tbody.querySelector('.zeile.blueprint');
+    for (const team of teams) {
+        const copy =  blueprint.cloneNode(true);
+        copy.classList.remove('blueprint');
+        copy.querySelector('.platz').textContent = team.platz;
+        copy.querySelector('.team').textContent = team.team;
+        copy.querySelector('.spiele').textContent = team.spiele;
+        copy.querySelector('.punkte').textContent = team.punkte;
+        copy.querySelector('.tore').textContent = team.tore;
+        tbody.append(copy);
+    }
 }
 
 /******** INDEX ********/
