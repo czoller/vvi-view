@@ -16,7 +16,6 @@
         min-width: 600px;
     }
 }
-  
 
 .tabelle .platz {
     text-align: left;
@@ -25,4 +24,8 @@
 .tabelle .spiele, .tabelle .tore, .tabelle .punkte {
     text-align: center;
     width: 5em;
+}
+
+.list-group.list-group-striped li:nth-of-type(even){
+    background-color: rgba(var(--bs-emphasis-color-rgb), 0.05);
 }

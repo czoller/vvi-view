@@ -105,7 +105,6 @@ function fillSpielplaene(gruppen) {
     const tab = document.getElementById('tab');
     const tabBlueprint = tab.querySelector('.spielplan-tab.blueprint');
     for (const gruppe of gruppen) {
-        console.log(gruppe)
         const tabContentId = 'nav-spielplan-gruppe' + gruppe.nr;
         const tabId = tabContentId + '-tab';
 
@@ -113,7 +112,8 @@ function fillSpielplaene(gruppen) {
         tabContentCopy.classList.remove('blueprint');
         tabContentCopy.id = tabContentId;
         tabContentCopy.setAttribute('aria-labelledby', tabId);
-        tabContentCopy.textContent = `Spielplan ${gruppe.title}`;
+        tabContentCopy.querySelector('.title').textContent = `Spielplan ${gruppe.title}`;
+        fillSpieltage(gruppe.spieltage, tabContentCopy);
         tabContent.append(tabContentCopy);
 
         const tabCopy =  tabBlueprint.cloneNode(true);
@@ -126,6 +126,26 @@ function fillSpielplaene(gruppen) {
     }
     tabContentBlueprint.remove();
     tabBlueprint.remove();
+}
+
+function fillSpieltage(spieltage, parent) {
+    console.log(parent);
+    const ul = parent.querySelector('.spieltage');
+    console.log(ul);
+    const blueprint = ul.querySelector('.spieltag.blueprint');
+    console.log(spieltage);
+    for (const spieltag of spieltage) {
+        const copy =  blueprint.cloneNode(true);
+        copy.classList.remove('blueprint');
+        copy.querySelector('.datum').textContent = spieltag.datum.toLocaleDateString(undefined, {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        ul.append(copy);
+    }
+    blueprint.remove();
 }
 
 function fillTabellen(gruppen) {
