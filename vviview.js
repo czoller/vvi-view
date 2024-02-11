@@ -1,11 +1,13 @@
-try {
-    const hl = await loadHockeyLigen();
-    document.getElementById('saison').textContent = hl.saison;
-    fillBereiche(hl.bereiche, hl.saison);
-}
-catch (e) {
-    //TODO
-    //document.getElementById('output').textContent = e.message;
+async function loadIndex() {
+    try {
+        const hl = await loadHockeyLigen();
+        document.getElementById('saison').textContent = hl.saison;
+        fillBereiche(hl.bereiche, hl.saison);
+    }
+    catch (e) {
+        //TODO
+        //document.getElementById('output').textContent = e.message;
+    }
 }
 
 function fillBereiche(bereiche, saison) {
