@@ -1,6 +1,5 @@
 try {
     const hl = await loadHockeyLigen();
-    console.log(hl);
     document.getElementById('saison').textContent = hl.saison;
     fillBereiche(hl.bereiche, hl.saison);
 }
