@@ -21,6 +21,10 @@ body {
     }
 }
 
+#liga #saison, .liga .saison {
+    font-size: 0.8em;
+}
+
 .tabelle .platz {
     width: 4em;
 }

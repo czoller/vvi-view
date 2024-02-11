@@ -10,7 +10,7 @@ async function loadLiga() {
             console.log(lg);
             document.getElementById('title').textContent = lg.title;
             document.getElementById('bereich').textContent = lg.bereich;
-            document.getElementById('saison').textContent = saison;
+            document.getElementById('saison').textContent = formatSaison(saison);
             fillTabellen(lg.gruppen);
             fillSpielplaene(lg.gruppen);
         }
@@ -151,7 +151,6 @@ function fillSpiele(spiele, parent) {
     const spieleDiv = parent.querySelector('.spiele');
     const blueprint = spieleDiv.querySelector('.spiel.blueprint');
     for (const spiel of spiele) {
-        console.log(spiel)
         const copy =  blueprint.cloneNode(true);
         copy.classList.remove('blueprint');
         copy.querySelector('.uhrzeit').textContent = spiel.uhrzeit;
@@ -209,7 +208,7 @@ function fillTabelle(teams, parent) {
 async function loadIndex() {
     try {
         const hl = await fetchHockeyLigen();
-        document.getElementById('saison').textContent = hl.saison;
+        document.getElementById('saison').textContent = formatSaison(hl.saison);
         fillBereiche(hl.bereiche, hl.saison);
     }
     catch (e) {
@@ -255,10 +254,10 @@ function fillLigen(ligen, parent, saison) {
     for (const liga of ligen) {
         const copy =  blueprint.cloneNode(true);
         copy.classList.remove('blueprint');
-        copy.textContent = liga.LigaTitel;
+        copy.querySelector('.title').textContent = liga.LigaTitel;
         copy.setAttribute('href', `liga.html?saison=${liga.LigaSaison}&liga=${liga.LigaID}`);
         if (liga.LigaSaison != saison) {
-            copy.textContent += ` (${liga.LigaSaison})`;
+            copy.querySelector('.saison').textContent = formatSaison(liga.LigaSaison);
         }
         listGroup.append(copy);
     }
@@ -317,4 +316,12 @@ function maxOccurence(items) {
         }
     }
     return maxItem.item;
+}
+
+function formatSaison(saison) {
+    const matches = saison.match(/(?<name1>[A-Z])(?<nameRest>[A-Z]+)(?<jahr>\d\d)/);
+    const name = matches.groups.name1 + matches.groups.nameRest.toLowerCase();
+    var jahr = parseInt(matches.groups.jahr);
+    jahr = jahr + '/' + (jahr + 1);
+    return `${name} ${jahr}`;
 }
