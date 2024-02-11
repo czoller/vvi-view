@@ -11,7 +11,8 @@ async function loadLiga() {
             document.getElementById('title').textContent = lg.title;
             document.getElementById('bereich').textContent = lg.bereich;
             document.getElementById('saison').textContent = saison;
-            fillGruppen(lg.gruppen);
+            fillTabellen(lg.gruppen);
+            fillSpielplaene(lg.gruppen);
         }
         catch (e) {
             //TODO
@@ -43,6 +44,7 @@ function buildGruppen(xmlGruppen) {
 
 function buildGruppe(xmlGruppe) {
     return {
+        nr: xmlGruppe.GLFD,
         title: xmlGruppe.GNAM,
         tabelle: buildTabelle(xmlGruppe),
         spieltage: buildSpieltage(xmlGruppe.Spiel)
@@ -97,16 +99,48 @@ function buildTabellenTeam(xmlZeile) {
     };
 }
 
-function fillGruppen(gruppen) {
-    const tab = document.getElementById('nav-tabelle');
-    const blueprint = tab.querySelector('.gruppe.blueprint');
+function fillSpielplaene(gruppen) {
+    const tabContent = document.getElementById('tabContent');
+    const tabContentBlueprint = tabContent.querySelector('.spielplan-tabcontent.blueprint');
+    const tab = document.getElementById('tab');
+    const tabBlueprint = tab.querySelector('.spielplan-tab.blueprint');
+    for (const gruppe of gruppen) {
+        console.log(gruppe)
+        const tabContentId = 'nav-spielplan-gruppe' + gruppe.nr;
+        const tabId = tabContentId + '-tab';
+
+        const tabContentCopy =  tabContentBlueprint.cloneNode(true);
+        tabContentCopy.classList.remove('blueprint');
+        tabContentCopy.id = tabContentId;
+        tabContentCopy.setAttribute('aria-labelledby', tabId);
+        tabContentCopy.textContent = `Spielplan ${gruppe.title}`;
+        tabContent.append(tabContentCopy);
+
+        const tabCopy =  tabBlueprint.cloneNode(true);
+        tabCopy.classList.remove('blueprint');
+        tabCopy.id = tabId;
+        tabCopy.setAttribute('data-bs-target', '#' + tabContentId);
+        tabCopy.setAttribute('aria-controls', tabContentId);
+        tabCopy.textContent = `Spielplan ${gruppe.title}`;
+        tab.append(tabCopy);
+    }
+    tabContentBlueprint.remove();
+    tabBlueprint.remove();
+}
+
+function fillTabellen(gruppen) {
+    if (gruppen.map(gruppe => gruppe.tabelle).filter(tabelle => tabelle != null).length > 1) {
+        document.getElementById('nav-tabelle-tab').textContent += 'n';
+    }
+    const tabContent = document.getElementById('nav-tabelle');
+    const blueprint = tabContent.querySelector('.gruppe.blueprint');
     for (const gruppe of gruppen) {
         if (gruppe.tabelle) {
             const copy =  blueprint.cloneNode(true);
             copy.classList.remove('blueprint');
             copy.querySelector('.title').textContent = gruppe.title;
             fillTabelle(gruppe.tabelle.teams, copy);
-            tab.append(copy);
+            tabContent.append(copy);
         }
     }
     blueprint.remove();
