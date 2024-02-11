@@ -1,3 +1,31 @@
+/******** LIGA ********/
+
+async function loadLiga() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const saison = urlParams.get('saison');
+    const liga = urlParams.get('liga');
+    console.log('saison', saison);
+    console.log('liga', liga);
+    if (saison != null && saison.match(/(HALLE|FELD)\d\d/) && liga != null && liga.match(/[A-Z0-9\-]{8,12}/)) {
+        try {
+            //const liga = await loadLiga(saison, liga);
+            document.getElementById('liga').textContent = liga;
+            document.getElementById('saison').textContent = saison;
+            //fillBereiche(hl.bereiche, hl.saison);
+        }
+        catch (e) {
+            //TODO
+            //document.getElementById('error').textContent = e.message;
+        }
+    }
+    else {
+        //TODO
+        //document.getElementById('error').textContent = e.message;
+    }
+}
+
+/******** INDEX ********/
+
 async function loadIndex() {
     try {
         const hl = await loadHockeyLigen();
@@ -75,6 +103,8 @@ function maxOccurence(items) {
     }
     return maxItem.item;
 }
+
+/******** COMMON ********/
 
 async function loadXml(url) {
     const response = await fetch(url);
