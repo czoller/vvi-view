@@ -65,7 +65,7 @@ function buildSpieltage(xmlSpiele) {
         }
         spieltage[xmlSpiel.SDAG].spiele.push(buildSpiel(xmlSpiel));
     }
-    return Object.values(spieltage);
+    return Object.values(spieltage).sort((a,b) => a.datum - b.datum);
 }
 
 function buildSpiel(xmlSpiel) {
