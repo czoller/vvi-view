@@ -7,6 +7,7 @@ async function loadLiga() {
     if (saison != null && saison.match(/^(HALLE|FELD)\d\d$/) && liga != null && liga.match(/^[A-Z0-9\-]{8,12}$/)) {
         try {
             const lg = await fetchHockeyLiga(saison, liga);
+            console.log(lg);
             document.getElementById('title').textContent = lg.title;
             document.getElementById('bereich').textContent = lg.bereich;
             document.getElementById('saison').textContent = saison;
@@ -25,25 +26,55 @@ async function loadLiga() {
 
 async function fetchHockeyLiga(saison, liga) {
     const lg = await loadXml(`https://hockey.de/VVI-web/Ergebnisdienst/HED-XML.asp?XML=J&saison=${saison}&liga=${liga}`);
-    const title = lg.Liga.ATIT;
-    const bereich = lg.Liga.AOTI;
-    var gruppen = lg.Liga.Gruppe;
-    if (!Array.isArray(gruppen)) {
-        gruppen = [gruppen];
-    }
-    gruppen = gruppen.map(buildGruppe);
+    console.log(lg);
     return {
-        title: title,
-        bereich: bereich,
-        gruppen: gruppen
+        title: lg.Liga.ATIT,
+        bereich: lg.Liga.AOTI,
+        gruppen: buildGruppen(lg.Liga.Gruppe)
     };
+}
+
+function buildGruppen(xmlGruppen) {
+    if (!Array.isArray(xmlGruppen)) {
+        xmlGruppen = [xmlGruppen];
+    }
+    return xmlGruppen.map(buildGruppe);
 }
 
 function buildGruppe(xmlGruppe) {
     return {
         title: xmlGruppe.GNAM,
-        tabelle: buildTabelle(xmlGruppe)
+        tabelle: buildTabelle(xmlGruppe),
+        spieltage: buildSpieltage(xmlGruppe.Spiel)
     };
+}
+
+function buildSpieltage(xmlSpiele) {
+    if (!Array.isArray(xmlSpiele)) {
+        xmlSpiele = [xmlSpiele];
+    }
+    const spieltage = {};
+    for (const xmlSpiel of xmlSpiele) {
+        if (!spieltage[xmlSpiel.SDAG]) {
+            spieltage[xmlSpiel.SDAG] = {
+                datum: new Date(xmlSpiel.SDAG),
+                spiele: []
+            };
+            spieltage[xmlSpiel.SDAG].spiele.push(buildSpiel(xmlSpiel));
+        }
+    }
+    return Object.values(spieltage);
+}
+
+function buildSpiel(xmlSpiel) {
+    return {
+        uhrzeit: xmlSpiel.SUHR,
+        ort: xmlSpiel.SORT,
+        team1: xmlSpiel.STEA,
+        team2: xmlSpiel.STEG,
+        ergebnis: xmlSpiel.SRES,
+        gemeldet: xmlSpiel.SMEL
+    }
 }
 
 function buildTabelle(xmlGruppe) {
