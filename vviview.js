@@ -165,6 +165,15 @@ function fillSpiele(spiele, parent) {
         }
         copy.querySelector('.ort').textContent = spiel.ort;
         copy.querySelector('.bemerkung').textContent = spiel.bemerkung;
+        console.log(spiel.bemerkung);
+        if (spiel.bemerkung.length > 7) {
+            copy.querySelector('.begegnung').classList.remove('col-9');
+            copy.querySelector('.begegnung').classList.add('col-7');
+            copy.querySelector('.begegnung').classList.add('col-md-8');
+            copy.querySelector('.ergebnisse').classList.remove('col-1');
+            copy.querySelector('.ergebnisse').classList.remove('col-md-2');
+            copy.querySelector('.ergebnisse').classList.add('col-3');
+        }
         spieleDiv.append(copy);
     }
     blueprint.remove();
