@@ -32,7 +32,7 @@ body {
     width: 5em;
 }
 
-.list-group.list-group-striped li:nth-of-type(even){
+.list-group.list-group-striped li:nth-of-type(odd){
     background-color: rgba(var(--bs-emphasis-color-rgb), 0.05);
 }
 
