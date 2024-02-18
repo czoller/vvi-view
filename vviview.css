@@ -25,6 +25,10 @@ body {
     font-size: 0.8em;
 }
 
+.back {
+    text-decoration: none;
+}
+
 .tabelle .platz {
     width: 4em;
 }
