@@ -277,9 +277,11 @@ function fillLigen(ligen, parent, saison) {
 
 async function loadXml(url) {
     const response = await fetch(url);
-    const buffer = await response.arrayBuffer();
-    const xml = new TextDecoder('ISO-8859-1').decode(buffer);
-    const dom = new DOMParser().parseFromString(xml, "text/xml");
+    const bufferIso = await response.arrayBuffer();
+    const strIso = new TextDecoder('ISO-8859-1').decode(bufferIso);
+    const bufferUtf = new TextEncoder().encode(strIso);
+    const strUtf = new TextDecoder('UTF-8').decode(bufferUtf);
+    const dom = new DOMParser().parseFromString(strUtf, "text/xml");
     const obj = parseXml(dom);
     return obj;
 }
